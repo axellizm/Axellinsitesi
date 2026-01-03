@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AXELLIZM || PRESTIGE AUTH</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #ff007f;
+            --dark: #050505;
+            --card-bg: rgba(15, 15, 15, 0.98);
+            --classic-border: 1px solid rgba(255, 0, 127, 0.3);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        
+        body { 
+            background: radial-gradient(circle at center, #1a0010 0%, var(--dark) 100%);
+            color: #fff; font-family: 'Montserrat', sans-serif; 
+            height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+        }
+
+        /* --- CLASSIC INTRO --- */
+        #splash {
+            position: fixed; inset: 0; background: #000; z-index: 10000;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 1s ease;
+        }
+        .intro-text {
+            font-family: 'Bodoni Moda', serif; font-size: 2.2rem; color: var(--pink);
+            letter-spacing: 12px; text-transform: uppercase; font-style: italic;
+            animation: prestigeFade 3.5s forwards; opacity: 0;
+        }
+        @keyframes prestigeFade {
+            0% { opacity: 0; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; }
+        }
+
+        header { padding: 30px; text-align: center; border-bottom: var(--classic-border); background: rgba(0,0,0,0.5); }
+        .logo { font-family: 'Bodoni Moda', serif; font-size: 1.8rem; letter-spacing: 6px; color: var(--pink); font-weight: 700; }
+
+        main { flex: 1; overflow-y: auto; padding: 25px; padding-bottom: 120px; }
+
+        /* --- AUTH CARD --- */
+        .auth-container {
+            background: var(--card-bg);
+            border: var(--classic-border);
+            padding: 40px 25px;
+            border-radius: 2px; /* Keskin köşeler */
+            max-width: 450px; margin: 0 auto;
+        }
+
+        .auth-header { text-align: center; margin-bottom: 35px; }
+        .auth-header h2 { font-family: 'Bodoni Moda', serif; font-size: 2rem; margin-bottom: 5px; }
+        .auth-header p { font-size: 0.65rem; color: var(--pink); letter-spacing: 3px; text-transform: uppercase; }
+
+        /* --- CLASSIC INPUTS --- */
+        .input-group { margin-bottom: 20px; }
+        input {
+            width: 100%; padding: 18px; 
+            background: transparent; border: 1px solid #222;
+            color: #fff; font-family: 'Montserrat'; font-size: 0.85rem;
+            transition: 0.3s;
+        }
+        input:focus { border-color: var(--pink); outline: none; background: rgba(255, 0, 127, 0.02); }
+
+        /* --- CLASSIC BUTTONS --- */
+        .btn {
+            width: 100%; padding: 20px; margin-bottom: 12px;
+            border: none; cursor: pointer;
+            font-family: 'Montserrat'; font-weight: 600; font-size: 0.75rem;
+            text-transform: uppercase; letter-spacing: 3px;
+            transition: 0.4s; position: relative; overflow: hidden;
+        }
+        .btn-pink { background: var(--pink); color: #fff; }
+        .btn-pink:active { transform: scale(0.98); background: #d6006b; }
+
+        .btn-google {
+            background: #fff; color: #000;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-google img { width: 18px; }
+
+        /* Shimmer Effect */
+        .btn::after {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: skewX(-20deg); animation: shimmer 5s infinite;
+        }
+        @keyframes shimmer { 0% { left: -100%; } 20% { left: 150%; } 100% { left: 150%; } }
+
+        /* --- STATUS BAR --- */
+        .status-footer {
+            position: fixed; bottom: 80px; width: 100%; text-align: center;
+            font-size: 0.6rem; color: #444; letter-spacing: 2px;
+        }
+
+        /* --- MÜZİK ÇALAR --- */
+        .mini-player {
+            position: fixed; bottom: 0; width: 100%; height: 70px;
+            background: #000; border-top: var(--classic-border);
+            display: flex; align-items: center; padding: 0 25px;
+        }
+        .track-info { font-size: 0.7rem; letter-spacing: 1px; }
+        .track-info b { color: var(--pink); }
+        .viz { display: flex; gap: 4px; margin-left: auto; }
+        .v-bar { width: 2px; height: 15px; background: var(--pink); animation: wave 0.6s infinite alternate; }
+        @keyframes wave { from { height: 4px; } to { height: 20px; } }
+
+    </style>
+</head>
+<body>
+
+    <div id="splash"><div class="intro-text">AXELLIZM</div></div>
+
+    <audio id="bgBeat" loop>
+        <source src="https://www.mboxdrive.com/Deha-Tuzcu-Rxckstar.mp3" type="audio/mp3">
+    </audio>
+
+    <header><div class="logo">AXELLIZM</div></header>
+
+    <main>
+        <div class="auth-container">
+            <div class="auth-header">
+                <h2 id="userNameDisplay">Misafir</h2>
+                <p>Digital Identity Node</p>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="regUser" placeholder="KULLANICI ADI">
+            </div>
+            <div class="input-group">
+                <input type="password" id="regPass" placeholder="GÜVENLİK ŞİFRESİ">
+            </div>
+
+            <button class="btn btn-pink" onclick="systemAction('register')">SİSTEME KAYDOL</button>
+            <button class="btn" style="background:#111; color:#fff; border:1px solid #333;" onclick="systemAction('login')">GİRİŞ YAP</button>
+            
+            <div style="text-align:center; margin: 15px 0; color:#333; font-size:0.7rem;">VEYA</div>
+
+            <button class="btn btn-google" onclick="googleLogin()">
+                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="G">
+                GOOGLE İLE DEVAM ET
+            </button>
+        </div>
+
+        <div class="status-footer">
+            DATABASE CONNECTED — TOTAL NODES: <span id="totalNodes">14,209</span>
+        </div>
+    </main>
+
+    <div class="mini-player">
+        <div class="track-info">NOW PLAYING: <b>DEHA TUZCU - RXCKSTAR</b></div>
+        <div class="viz">
+            <div class="v-bar"></div>
+            <div class="v-bar" style="animation-delay: 0.1s"></div>
+            <div class="v-bar" style="animation-delay: 0.2s"></div>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('bgBeat');
+
+        // --- GİRİŞ ANİMASYONU ---
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('splash').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('splash').remove();
+                    audio.play().catch(() => console.log("Müzik için etkileşim bekleniyor."));
+                }, 1000);
+            }, 3000);
+            loadDatabase();
+        };
+
+        // --- GELİŞMİŞ VERİTABANI SİSTEMİ ---
+        function systemAction(type) {
+            vibe();
+            const user = document.getElementById('regUser').value.trim();
+            const pass = document.getElementById('regPass').value.trim();
+
+            if(!user || !pass) return alert("Eksik veri girişi!");
+
+            const db = JSON.parse(localStorage.getItem('axellizm_db') || '{}');
+
+            if(type === 'register') {
+                if(db[user]) return alert("Bu kullanıcı zaten mevcut!");
+                db[user] = { pass: pass, date: new Date().toISOString(), rank: 'MEMBER' };
+                localStorage.setItem('axellizm_db', JSON.stringify(db));
+                alert("Veritabanına eklendi: " + user);
+            } else {
+                if(db[user] && db[user].pass === pass) {
+                    sessionStorage.setItem('current_session', user);
+                    updateUI(user);
+                    alert("Erişim onaylandı: " + user);
+                } else {
+                    alert("Hatalı kimlik bilgileri!");
+                }
+            }
+        }
+
+        function googleLogin() {
+            vibe();
+            alert("Google API Bağlantısı Kuruluyor...");
+            // Burası normalde Google SDK ile bağlanır, simüle ediyoruz:
+            setTimeout(() => {
+                const googleUser = "G-User_" + Math.floor(Math.random()*999);
+                updateUI(googleUser);
+            }, 1000);
+        }
+
+        function updateUI(name) {
+            document.getElementById('userNameDisplay').innerText = name.toUpperCase();
+        }
+
+        function loadDatabase() {
+            const nodes = 14209 + Math.floor(Math.random()*100);
+            document.getElementById('totalNodes').innerText = nodes.toLocaleString();
+        }
+
+        function vibe() {
+            if ("vibrate" in navigator) navigator.vibrate(25);
+        }
+    </script>
+</body>
+</html>
