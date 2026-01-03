@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AXELLIZM - Space Neon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #ff2d55;
+            --light-pink: #ffb1c1;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; font-family: 'Montserrat', sans-serif;
+            /* Siyah ve Pembe Döngüsü */
+            animation: spaceCycle 12s ease-in-out infinite;
+            background: black;
+        }
+
+        @keyframes spaceCycle {
+            0% { background-color: #000000; }
+            50% { background-color: #1a000a; } /* Çok koyu pembe/siyah geçişi */
+            100% { background-color: #000000; }
+        }
+
+        /* Klasik ve Açık Pembe Başlık */
+        h1 {
+            position: fixed; width: 100%; top: 40px; text-align: center;
+            font-family: 'Playfair Display', serif;
+            color: var(--light-pink);
+            font-size: 4.5rem; letter-spacing: 8px;
+            text-shadow: 0 0 20px rgba(255, 45, 85, 0.5);
+            z-index: 100; pointer-events: none;
+        }
+
+        .controls {
+            position: fixed; bottom: 60px; width: 100%;
+            display: flex; justify-content: center; gap: 40px; z-index: 200;
+        }
+
+        /* 3D Cam Kare Butonlar */
+        button {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 45, 85, 0.3);
+            color: white; width: 160px; height: 160px;
+            border-radius: 35px; /* Yumuşak Kare */
+            font-size: 1.1rem; font-weight: 600; cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 15px rgba(255,45,85,0.1);
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            transform: translateY(-15px) rotate(3deg);
+            background: rgba(255, 45, 85, 0.15);
+            box-shadow: 0 25px 50px rgba(255, 45, 85, 0.3);
+            border-color: var(--pink);
+        }
+
+        canvas { position: absolute; top: 0; left: 0; }
+        #snake-canvas { z-index: 5; }
+        #particle-canvas { z-index: 10; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+<h1>AXELLIZM</h1>
+
+<div class="controls">
+    <button onclick="magicHeartAction()">Magic<br>Heart</button>
+    <button onclick="initSnake()">Start<br>Snake</button>
+</div>
+
+<canvas id="particle-canvas"></canvas>
+<canvas id="snake-canvas"></canvas>
+
+<script>
+// --- Parçacıklı 3D Neon Kalp Efekti ---
+const pCanvas = document.getElementById("particle-canvas");
+const pCtx = pCanvas.getContext("2d");
+pCanvas.width = window.innerWidth;
+pCanvas.height = window.innerHeight;
+
+let particles = [];
+
+class Particle {
+    constructor(x, y, color) {
+        this.x = x; this.y = y;
+        this.size = Math.random() * 4 + 2;
+        this.speedX = Math.random() * 6 - 3;
+        this.speedY = Math.random() * -6 - 2;
+        this.gravity = 0.1;
+        this.opacity = 1;
+        this.color = color;
+    }
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.speedY += this.gravity;
+        this.opacity -= 0.015;
+    }
+    draw() {
+        pCtx.fillStyle = this.color;
+        pCtx.globalAlpha = this.opacity;
+        pCtx.shadowBlur = 15;
+        pCtx.shadowColor = this.color;
+        pCtx.beginPath();
+        pCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        pCtx.fill();
+    }
+}
+
+function magicHeartAction() {
+    // Patlama efekti oluştur
+    for(let i=0; i<50; i++) {
+        particles.push(new Particle(window.innerWidth/2, window.innerHeight/2, "#ff2d55"));
+    }
+    // Yeni sayfada açma (Buraya istediğin linki yazabilirsin)
+    setTimeout(() => {
+        window.open("https://www.google.com", "_blank");
+    }, 300);
+}
+
+function animateParticles() {
+    pCtx.clearRect(0,0,pCanvas.width, pCanvas.height);
+    for(let i = particles.length - 1; i >= 0; i--) {
+        particles[i].update();
+        particles[i].draw();
+        if(particles[i].opacity <= 0) particles.splice(i, 1);
+    }
+    requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// --- Yılan Oyunu (30ms Turbo & Neon) ---
+const sCanvas = document.getElementById("snake-canvas");
+const sCtx = sCanvas.getContext("2d");
+let box=20, snake, food, d, nextD, game;
+
+function initSnake() {
+    if(game) clearInterval(game);
+    sCanvas.width = Math.floor(window.innerWidth/box)*box;
+    sCanvas.height = Math.floor(window.innerHeight/box)*box;
+    snake = [{x:box*10, y:box*10}];
+    d = "RIGHT"; nextD = "RIGHT";
+    spawnFood();
+    game = setInterval(drawSnake, 30);
+}
+
+function spawnFood() {
+    food = {x:Math.floor(Math.random()*(sCanvas.width/box))*box, y:Math.floor(Math.random()*(sCanvas.height/box))*box};
+}
+
+document.addEventListener("keydown", e => {
+    if(e.keyCode==37 && d!="RIGHT") nextD="LEFT";
+    if(e.keyCode==38 && d!="DOWN") nextD="UP";
+    if(e.keyCode==39 && d!="LEFT") nextD="RIGHT";
+    if(e.keyCode==40 && d!="UP") nextD="DOWN";
+});
+
+function drawSnake() {
+    d = nextD;
+    sCtx.clearRect(0,0,sCanvas.width, sCanvas.height);
+    
+    // Yılan Çizimi
+    snake.forEach((pos, i) => {
+        sCtx.fillStyle = i === 0 ? "#ff2d55" : "rgba(255, 45, 85, 0.3)";
+        sCtx.shadowBlur = i === 0 ? 20 : 0;
+        sCtx.shadowColor = "#ff2d55";
+        sCtx.beginPath();
+        sCtx.roundRect(pos.x, pos.y, box-2, box-2, 8);
+        sCtx.fill();
+    });
+
+    // Yem
+    sCtx.fillStyle = "white";
+    sCtx.shadowBlur = 15; sCtx.shadowColor = "white";
+    sCtx.fillRect(food.x, food.y, box-2, box-2);
+
+    let nx = snake[0].x, ny = snake[0].y;
+    if(d=="LEFT") nx-=box; if(d=="UP") ny-=box;
+    if(d=="RIGHT") nx+=box; if(d=="DOWN") ny+=box;
+
+    if(nx==food.x && ny==food.y) spawnFood(); else snake.pop();
+    
+    let head = {x:nx, y:ny};
+    if(nx<0 || nx>=sCanvas.width || ny<0 || ny>=sCanvas.height || snake.some(s=>s.x==nx && s.y==ny)) {
+        clearInterval(game);
+        alert("GAME OVER");
+    }
+    snake.unshift(head);
+}
+
+window.addEventListener("resize", () => {
+    pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight;
+});
+</script>
+</body>
+</html>
